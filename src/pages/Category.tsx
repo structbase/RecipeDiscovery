@@ -1,3 +1,3 @@
 export default function Category() {
-    return <h1>Hello, its home</h1>;
+    return <h1>Hello, its Category</h1>;
 }
