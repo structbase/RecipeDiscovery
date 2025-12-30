@@ -3,24 +3,63 @@ import useFetch from "../hooks/useFetch";
 import type { MealDetail } from "../types/meal";
 import type { MealsResponse } from "../types/api";
 import { useFavorites } from "../context/FavoritesContext";
+import Spinner from "../components/Spinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function RecipeDetail() {
     const { recipeId } = useParams<{ recipeId: string }>();
     const { isFavorite, addFavorite, removeFavorite } = useFavorites();
 
-    if (!recipeId) {
-        return <p>Invalid recipe.</p>;
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data, loading, error } = useFetch<MealsResponse<MealDetail>>(
-        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
+        recipeId
+            ? `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
+            : ""
     );
 
-    if (loading) return <p>Loading recipe...</p>;
-    if (error) return <p>Error loading recipe.</p>;
+    if (!recipeId) {
+        return (
+            <div className="container my-5">
+                <div className="alert alert-danger" role="alert">
+                    Invalid recipe.
+                </div>
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="container my-5">
+                <div className="row">
+                    <div className="col">
+                        <div className="text-center">
+                            <Spinner />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container my-5">
+                <div className="row">
+                    <div className="col">
+                        <ErrorMessage message="Error loading meals." />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (!data || !data.meals || data.meals.length === 0) {
-        return <p>Recipe not found.</p>;
+        return (
+            <div className="container my-5">
+                <div className="alert alert-warning" role="alert">
+                    Recipe not found.
+                </div>
+            </div>
+        );
     }
 
     const meal = data.meals[0];
@@ -45,30 +84,85 @@ export default function RecipeDetail() {
         }
     };
 
+    const isFav = isFavorite(meal.idMeal);
+
     return (
-        <div>
-            <h1>{meal.strMeal}</h1>
-            <img src={meal.strMealThumb} alt={`${meal.strMeal} dish`} />
-            <p>
-                <strong>Category:</strong> {meal.strCategory}
-            </p>
-            <p>
-                <strong>Area:</strong> {meal.strArea}
-            </p>
-            <h2>Ingredients</h2>
-            <ul>
-                {ingredients.map((item, index) => (
-                    <li key={index}>{item}</li>
-                ))}
-            </ul>
-            <h2>Instructions</h2>
-            <p>{meal.strInstructions}</p>
-            
-            <button onClick={handleClick}>
-                {isFavorite(meal.idMeal)
-                    ? "Remove from Favorites"
-                    : "Add to Favorites"}
-            </button>{" "}
+        <div className="container my-5">
+            <div className="row">
+                <div className="col-lg-8 mx-auto">
+                    <div className="card shadow">
+                        <img
+                            src={meal.strMealThumb}
+                            alt={`${meal.strMeal} dish`}
+                            className="card-img-top"
+                            style={{ maxHeight: "500px", objectFit: "cover" }}
+                        />
+                        <div className="card-body">
+                            <h1 className="card-title display-4 fw-bold mb-4">
+                                {meal.strMeal}
+                            </h1>
+
+                            <div className="mb-4">
+                                <span className="badge bg-primary me-2">
+                                    {meal.strCategory}
+                                </span>
+                                <span className="badge bg-secondary">
+                                    {meal.strArea}
+                                </span>
+                            </div>
+
+                            <div className="mb-4">
+                                <button
+                                    className={`btn btn-lg ${
+                                        isFav
+                                            ? "btn-danger"
+                                            : "btn-outline-primary"
+                                    }`}
+                                    onClick={handleClick}
+                                >
+                                    {isFav ? (
+                                        <>Remove from Favorites</>
+                                    ) : (
+                                        <> Add to Favorites</>
+                                    )}
+                                </button>
+                            </div>
+
+                            <div className="mb-4">
+                                <h2 className="h3 fw-bold mb-3">Ingredients</h2>
+                                <ul className="list-group">
+                                    {ingredients.map((item, index) => (
+                                        <li
+                                            key={index}
+                                            className="list-group-item"
+                                        >
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h2 className="h3 fw-bold mb-3">
+                                    Instructions
+                                </h2>
+                                <div className="card bg-light">
+                                    <div className="card-body">
+                                        <p
+                                            className="card-text"
+                                            style={{
+                                                whiteSpace: "pre-line",
+                                            }}
+                                        >
+                                            {meal.strInstructions}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
