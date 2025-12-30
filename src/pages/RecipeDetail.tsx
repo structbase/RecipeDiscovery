@@ -38,7 +38,7 @@ export default function RecipeDetail() {
         <div>
             <h1>{meal.strMeal}</h1>
 
-            <img src={meal.strMealThumb} alt={meal.strMeal} width={300} />
+            <img src={meal.strMealThumb} alt={`${meal.strMeal} dish`} />
 
             <p>
                 <strong>Category:</strong> {meal.strCategory}
@@ -56,6 +56,8 @@ export default function RecipeDetail() {
 
             <h2>Instructions</h2>
             <p>{meal.strInstructions}</p>
+
+            <button>Add to Favorites</button>
         </div>
     );
 }
