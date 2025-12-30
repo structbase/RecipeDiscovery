@@ -81,11 +81,26 @@ export default function Favorites() {
     }
 
     return (
-        <div>
-            <h1>Your Favorites</h1>
-            <div className="favorites-grid">
+        <div className="container my-5">
+            <div className="row mb-4">
+                <div className="col">
+                    <h1 className="display-4 fw-bold text-center">
+                        Your Favorites
+                    </h1>
+                    <p className="lead text-center text-muted">
+                        {meals.length} favorite recipe
+                        {meals.length !== 1 ? "s" : ""}
+                    </p>
+                </div>
+            </div>
+            <div className="row g-4">
                 {meals.map((meal) => (
-                    <MealCard key={meal.idMeal} meal={meal} />
+                    <div
+                        key={meal.idMeal}
+                        className="col-md-6 col-lg-4 col-xl-3"
+                    >
+                        <MealCard meal={meal} />
+                    </div>
                 ))}
             </div>
         </div>
