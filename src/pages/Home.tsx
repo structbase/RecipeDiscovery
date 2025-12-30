@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import type { CategoriesResponse } from "../types/api";
 
@@ -13,11 +14,15 @@ export default function Home() {
         <div>
             <h1>Categories</h1>
 
-            {data?.categories.map((category) => (
-                <div key={category.idCategory}>
-                    <h3>{category.strCategory}</h3>
-                </div>
-            ))}
+            <ul>
+                {data?.categories.map((category) => (
+                    <li key={category.idCategory}>
+                        <Link to={`/category/${category.strCategory}`}>
+                            {category.strCategory}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
