@@ -47,6 +47,15 @@ export default function RecipeDetail() {
                 <strong>Area:</strong> {meal.strArea}
             </p>
 
+            <h2>Ingredients</h2>
+            <ul>
+                {ingredients.map((item, index) => (
+                    <li key={index}>{item}</li>
+                ))}
+            </ul>
+
+            <h2>Instructions</h2>
+            <p>{meal.strInstructions}</p>
         </div>
     );
 }
