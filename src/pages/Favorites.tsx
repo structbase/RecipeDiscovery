@@ -3,6 +3,8 @@ import { useFavorites } from "../context/FavoritesContext";
 import MealCard from "../components/MealCard";
 import type { MealSummary } from "../types/meal";
 import type { MealsResponse } from "../types/api";
+import Spinner from "../components/Spinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function Favorites() {
     const { favorites } = useFavorites();
@@ -55,27 +57,54 @@ export default function Favorites() {
     // If no favorites, show message
     if (favorites.length === 0) {
         return (
-            <div>
-                <h1>Your Favorites</h1>
-                <p>You have no favorite recipes. Go add some!</p>
+            <div className="container my-5">
+                <div className="row">
+                    <div className="col">
+                        <h1 className="display-4 fw-bold text-center">
+                            Your Favorites
+                        </h1>
+                        <div
+                            className="alert alert-info text-center"
+                            role="alert"
+                        >
+                            <p className="mb-0">
+                                You have no favorite recipes. Go add some!
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (loading) {
         return (
-            <div>
-                <h1>Your Favorites</h1>
-                <p>Loading favorite recipes...</p>
+            <div className="container my-5">
+                <div className="row">
+                    <div className="col">
+                        <h1 className="display-4 fw-bold text-center">
+                            Your Favorites
+                        </h1>
+                        <div className="text-center">
+                            <Spinner />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div>
-                <h1>Your Favorites</h1>
-                <p>Error loading favorite recipes: {error.message}</p>
+            <div className="container my-5">
+                <div className="row">
+                    <div className="col">
+                        <h1 className="display-4 fw-bold text-center">
+                            Your Favorites
+                        </h1>
+                        <ErrorMessage message={error.message} />
+                    </div>
+                </div>
             </div>
         );
     }

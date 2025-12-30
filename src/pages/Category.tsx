@@ -1,4 +1,4 @@
-import {useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import type { MealSummary } from "../types/meal";
 import type { MealsResponse } from "../types/api";
@@ -18,7 +18,13 @@ export default function Category() {
     if (loading) {
         return (
             <div className="container my-5">
-                <Spinner />
+                <div className="row">
+                    <div className="col">
+                        <div className="text-center">
+                            <Spinner />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -26,7 +32,11 @@ export default function Category() {
     if (error) {
         return (
             <div className="container my-5">
-                <ErrorMessage message="Error loading meals." />
+                <div className="row">
+                    <div className="col">
+                        <ErrorMessage message="Error loading meals." />
+                    </div>
+                </div>
             </div>
         );
     }
