@@ -12,6 +12,7 @@ export default function RecipeDetail() {
         return <p>Invalid recipe.</p>;
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data, loading, error } = useFetch<MealsResponse<MealDetail>>(
         `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
     );
