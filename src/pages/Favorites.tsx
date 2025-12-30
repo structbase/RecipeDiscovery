@@ -1,40 +1,93 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useFavorites } from "../context/FavoritesContext";
-import useFetch from "../hooks/useFetch";
-import type { MealDetail } from "../types/meal";
+import MealCard from "../components/MealCard";
+import type { MealSummary } from "../types/meal";
 import type { MealsResponse } from "../types/api";
 
 export default function Favorites() {
     const { favorites } = useFavorites();
+    const [meals, setMeals] = useState<MealSummary[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        if (favorites.length === 0) {
+            setMeals([]);
+            return;
+        }
+
+        const fetchAllFavorites = async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                // Fetch all favorite meals in parallel
+                const promises = favorites.map((id) =>
+                    fetch(
+                        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+                    ).then((res) => res.json())
+                );
+
+                const results = await Promise.all(promises);
+                const allMeals: MealSummary[] = [];
+
+                results.forEach((data: MealsResponse<MealSummary>) => {
+                    if (data.meals && data.meals[0]) {
+                        allMeals.push(data.meals[0]);
+                    }
+                });
+
+                setMeals(allMeals);
+            } catch (err) {
+                setError(
+                    err instanceof Error
+                        ? err
+                        : new Error("Failed to load favorites")
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllFavorites();
+    }, [favorites]);
 
     // If no favorites, show message
     if (favorites.length === 0) {
-        return <p>You have no favorite recipes. Go add some!</p>;
+        return (
+            <div>
+                <h1>Your Favorites</h1>
+                <p>You have no favorite recipes. Go add some!</p>
+            </div>
+        );
     }
 
-    // Fetch all favorite meals using Promise.all pattern
-    const { data, loading, error } = useFetch<MealsResponse<MealDetail>>(
-        // API supports only one meal at a time, so fetch first favorite as a simple demo
-        // Later you could fetch all with Promise.all or a custom hook
-        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${favorites[0]}`
-    );
+    if (loading) {
+        return (
+            <div>
+                <h1>Your Favorites</h1>
+                <p>Loading favorite recipes...</p>
+            </div>
+        );
+    }
 
-    if (loading) return <p>Loading favorite recipes...</p>;
-    if (error) return <p>Error loading favorite recipes.</p>;
-    if (!data || !data.meals) return <p>No data found for favorites.</p>;
-
-    const meal = data.meals[0];
+    if (error) {
+        return (
+            <div>
+                <h1>Your Favorites</h1>
+                <p>Error loading favorite recipes: {error.message}</p>
+            </div>
+        );
+    }
 
     return (
         <div>
             <h1>Your Favorites</h1>
-            <ul>
-                {favorites.map((id) => (
-                    <li key={id}>
-                        <Link to={`/recipe/${id}`}>Recipe ID: {id}</Link>
-                    </li>
+            <div className="favorites-grid">
+                {meals.map((meal) => (
+                    <MealCard key={meal.idMeal} meal={meal} />
                 ))}
-            </ul>
+            </div>
         </div>
     );
 }
