@@ -2,9 +2,11 @@ import { useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import type { MealDetail } from "../types/meal";
 import type { MealsResponse } from "../types/api";
+import { useFavorites } from "../context/FavoritesContext";
 
 export default function RecipeDetail() {
     const { recipeId } = useParams<{ recipeId: string }>();
+    const { isFavorite, addFavorite, removeFavorite } = useFavorites();
 
     if (!recipeId) {
         return <p>Invalid recipe.</p>;
@@ -34,30 +36,38 @@ export default function RecipeDetail() {
         }
     }
 
+    const handleClick = () => {
+        if (isFavorite(meal.idMeal)) {
+            removeFavorite(meal.idMeal);
+        } else {
+            addFavorite(meal.idMeal);
+        }
+    };
+
     return (
         <div>
             <h1>{meal.strMeal}</h1>
-
             <img src={meal.strMealThumb} alt={`${meal.strMeal} dish`} />
-
             <p>
                 <strong>Category:</strong> {meal.strCategory}
             </p>
             <p>
                 <strong>Area:</strong> {meal.strArea}
             </p>
-
             <h2>Ingredients</h2>
             <ul>
                 {ingredients.map((item, index) => (
                     <li key={index}>{item}</li>
                 ))}
             </ul>
-
             <h2>Instructions</h2>
             <p>{meal.strInstructions}</p>
-
-            <button>Add to Favorites</button>
+            
+            <button onClick={handleClick}>
+                {isFavorite(meal.idMeal)
+                    ? "Remove from Favorites"
+                    : "Add to Favorites"}
+            </button>{" "}
         </div>
     );
 }
