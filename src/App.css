@@ -1,3 +1,4 @@
+/* Meal card hover animation */
 .meal-card {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
@@ -7,6 +8,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
 }
 
+/* Meal card title styling */
 .meal-card .card-title {
     font-size: 1rem;
     min-height: 3rem;

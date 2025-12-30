@@ -1,7 +1,8 @@
 import { useState } from "react";
 
+// Hook for syncing state with localStorage
 function useLocalStorage<T>(key: string, initialValue: T) {
-    // Initialize state from localStorage (if available)
+    // Load initial value from localStorage
     const [value, setValue] = useState<T>(() => {
         try {
             const stored = localStorage.getItem(key);
@@ -11,13 +12,13 @@ function useLocalStorage<T>(key: string, initialValue: T) {
         }
     });
 
-    // Update state + localStorage together
+    // Update both state and localStorage
     const setStoredValue = (newValue: T) => {
         try {
             setValue(newValue);
             localStorage.setItem(key, JSON.stringify(newValue));
         } catch {
-            // fail silently (localStorage can be unavailable)
+            // Fail silently if localStorage unavailable
         }
     };
 

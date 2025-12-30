@@ -1,9 +1,11 @@
+// Basic meal information for lists and cards
 export interface MealSummary {
     idMeal: string;
     strMeal: string;
     strMealThumb: string;
 }
 
+// Complete meal details with ingredients and instructions
 export interface MealDetail {
     idMeal: string;
     strMeal: string;
@@ -20,6 +22,7 @@ export interface MealDetail {
     [key: `strMeasure${number}`]: string | null; // Measure for ingredient at position `number`.
 }
 
+// Props for MealCard component
 export interface MealCardProps {
     meal: MealSummary;
     link?: string;

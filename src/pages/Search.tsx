@@ -7,17 +7,13 @@ import type { MealsResponse } from "../types/api";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 
-/**
- * Recipe search page with URL state.
- * Syncs input with search params and API.
- * @returns form and search results
- */
+// Recipe search page with URL state sync
 export default function Search() {
     const [query, setQuery] = useState("");
     const [searchParams, setSearchParams] = useSearchParams();
     const searchTerm = searchParams.get("query") || "";
 
-    // Only construct the URL if searchTerm is not empty
+    // Fetch only when search term exists
     const { data, loading, error } = searchTerm
         ? // eslint-disable-next-line react-hooks/rules-of-hooks
             useFetch<MealsResponse<MealSummary>>(
@@ -36,6 +32,7 @@ export default function Search() {
 
     return (
         <div className="container my-5">
+            {/* Page header */}
             <div className="row mb-4">
                 <div className="col">
                     <h1 className="display-4 fw-bold text-center">
@@ -47,6 +44,7 @@ export default function Search() {
                 </div>
             </div>
 
+            {/* Search form */}
             <div className="row mb-4">
                 <div className="col-md-8 mx-auto">
                     <form onSubmit={handleSubmit}>
@@ -67,20 +65,24 @@ export default function Search() {
                 </div>
             </div>
 
+            {/* Loading state */}
             {loading && (
                 <div className="text-center">
                     <Spinner />
                 </div>
             )}
 
+            {/* Error state */}
             {error && <ErrorMessage message={error.message} />}
 
+            {/* No results message */}
             {!loading && !error && (!data || !data.meals) && searchTerm && (
                 <div className="alert alert-warning" role="alert">
                     No recipes found for "{searchTerm}".
                 </div>
             )}
 
+            {/* Search results grid */}
             {data?.meals && data.meals.length > 0 && (
                 <div className="row g-4">
                     {data.meals.map((meal) => (

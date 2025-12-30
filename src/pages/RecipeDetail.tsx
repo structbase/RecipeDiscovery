@@ -6,6 +6,7 @@ import { useFavorites } from "../context/FavoritesContext";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 
+// Recipe detail page with ingredients and instructions
 export default function RecipeDetail() {
     const { recipeId } = useParams<{ recipeId: string }>();
     const { isFavorite, addFavorite, removeFavorite } = useFavorites();
@@ -64,7 +65,7 @@ export default function RecipeDetail() {
 
     const meal = data.meals[0];
 
-    // Build ingredients list
+    // Extract ingredients and measures from meal data
     const ingredients: string[] = [];
 
     for (let i = 1; i <= 20; i++) {
@@ -76,6 +77,7 @@ export default function RecipeDetail() {
         }
     }
 
+    // Toggle favorite status
     const handleClick = () => {
         if (isFavorite(meal.idMeal)) {
             removeFavorite(meal.idMeal);
@@ -91,6 +93,7 @@ export default function RecipeDetail() {
             <div className="row">
                 <div className="col-lg-8 mx-auto">
                     <div className="card shadow">
+                        {/* Recipe image */}
                         <img
                             src={meal.strMealThumb}
                             alt={`${meal.strMeal} dish`}
@@ -98,10 +101,12 @@ export default function RecipeDetail() {
                             style={{ maxHeight: "500px", objectFit: "cover" }}
                         />
                         <div className="card-body">
+                            {/* Recipe title */}
                             <h1 className="card-title display-4 fw-bold mb-4">
                                 {meal.strMeal}
                             </h1>
 
+                            {/* Category and area badges */}
                             <div className="mb-4">
                                 <span className="badge bg-primary me-2">
                                     {meal.strCategory}
@@ -111,6 +116,7 @@ export default function RecipeDetail() {
                                 </span>
                             </div>
 
+                            {/* Favorite toggle button */}
                             <div className="mb-4">
                                 <button
                                     className={`btn btn-lg ${
@@ -128,6 +134,7 @@ export default function RecipeDetail() {
                                 </button>
                             </div>
 
+                            {/* Ingredients list */}
                             <div className="mb-4">
                                 <h2 className="h3 fw-bold mb-3">Ingredients</h2>
                                 <ul className="list-group">
@@ -142,6 +149,7 @@ export default function RecipeDetail() {
                                 </ul>
                             </div>
 
+                            {/* Cooking instructions */}
                             <div>
                                 <h2 className="h3 fw-bold mb-3">
                                     Instructions

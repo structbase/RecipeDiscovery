@@ -5,11 +5,14 @@ import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 import MealCard from "../components/MealCard";
 
+// Home page displaying all recipe categories
 export default function Home() {
+    // Fetch all available categories from API
     const { data, loading, error } = useFetch<CategoriesResponse>(
         "https://www.themealdb.com/api/json/v1/1/categories.php"
     );
 
+    // Show loading spinner while fetching
     if (loading) {
         return (
             <div className="container my-5">
@@ -18,6 +21,7 @@ export default function Home() {
         );
     }
 
+    // Show error message if fetch fails
     if (error) {
         return (
             <div className="container my-5">
@@ -26,6 +30,7 @@ export default function Home() {
         );
     }
 
+    // Show message if no categories available
     if (!data || !data.categories || data.categories.length === 0) {
         return (
             <div className="container my-5">
@@ -37,6 +42,7 @@ export default function Home() {
     }
     return (
         <div className="container my-5">
+            {/* Page header */}
             <div className="row mb-4">
                 <div className="col">
                     <h1 className="display-4 fw-bold text-center">
@@ -47,6 +53,7 @@ export default function Home() {
                     </p>
                 </div>
             </div>
+            {/* Categories grid */}
             <div className="row g-4">
                 {data.categories.map((category: Category) => (
                     <div

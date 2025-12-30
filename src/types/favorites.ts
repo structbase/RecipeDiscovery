@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+// Favorites context type definition
 export interface FavoritesContextType {
     favorites: string[];
     addFavorite: (id: string) => void; 
@@ -7,6 +8,7 @@ export interface FavoritesContextType {
     isFavorite: (id: string) => boolean; 
 }
 
+// Props for FavoritesProvider component
 export interface FavoritesProviderProps {
     children: ReactNode;
 }

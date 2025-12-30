@@ -1,3 +1,4 @@
+// Loading spinner component
 export default function Spinner() {
     return (
         <div className="d-flex justify-content-center align-items-center py-5">

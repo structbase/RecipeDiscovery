@@ -6,13 +6,16 @@ import type { MealsResponse } from "../types/api";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 
+// Favorites page displaying user's saved recipes
 export default function Favorites() {
     const { favorites } = useFavorites();
     const [meals, setMeals] = useState<MealSummary[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
+    // Fetch all favorite meals when favorites list changes
     useEffect(() => {
+        // Clear meals if no favorites
         if (favorites.length === 0) {
             setMeals([]);
             return;
@@ -23,7 +26,7 @@ export default function Favorites() {
             setError(null);
 
             try {
-                // Fetch all favorite meals in parallel
+                // Fetch all favorites in parallel
                 const promises = favorites.map((id) =>
                     fetch(
                         `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
@@ -33,6 +36,7 @@ export default function Favorites() {
                 const results = await Promise.all(promises);
                 const allMeals: MealSummary[] = [];
 
+                // Extract meal data from API responses
                 results.forEach((data: MealsResponse<MealSummary>) => {
                     if (data.meals && data.meals[0]) {
                         allMeals.push(data.meals[0]);
@@ -54,7 +58,7 @@ export default function Favorites() {
         fetchAllFavorites();
     }, [favorites]);
 
-    // If no favorites, show message
+    // Show empty state if no favorites
     if (favorites.length === 0) {
         return (
             <div className="container my-5">
@@ -111,6 +115,7 @@ export default function Favorites() {
 
     return (
         <div className="container my-5">
+            {/* Page header with favorites count */}
             <div className="row mb-4">
                 <div className="col">
                     <h1 className="display-4 fw-bold text-center">
@@ -122,6 +127,7 @@ export default function Favorites() {
                     </p>
                 </div>
             </div>
+            {/* Favorites grid */}
             <div className="row g-4">
                 {meals.map((meal) => (
                     <div

@@ -6,15 +6,19 @@ import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 import MealCard from "../components/MealCard";
 
+// Category page displaying meals for selected category
 export default function Category() {
+    // Get category name from URL params
     const { categoryName } = useParams<{ categoryName: string }>();
 
+    // Fetch meals filtered by category
     const { data, loading, error } = useFetch<MealsResponse<MealSummary>>(
         categoryName
             ? `https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoryName}`
             : ""
     );
 
+    // Show loading spinner while fetching
     if (loading) {
         return (
             <div className="container my-5">
@@ -29,6 +33,7 @@ export default function Category() {
         );
     }
 
+    // Show error message if fetch fails
     if (error) {
         return (
             <div className="container my-5">
@@ -41,6 +46,7 @@ export default function Category() {
         );
     }
 
+    // Show message if no meals found
     if (!data || !data.meals || data.meals.length === 0) {
         return (
             <div className="container my-5">
@@ -52,6 +58,7 @@ export default function Category() {
     }
     return (
         <div className="container my-5">
+            {/* Page header with category name */}
             <div className="row mb-4">
                 <div className="col">
                     <h1 className="display-4 fw-bold text-center">
@@ -63,6 +70,7 @@ export default function Category() {
                     </p>
                 </div>
             </div>
+            {/* Meals grid */}
             <div className="row g-4">
                 {data.meals.map((meal) => (
                     <div
