@@ -4,6 +4,8 @@ import useFetch from "../hooks/useFetch";
 import MealCard from "../components/MealCard";
 import type { MealSummary } from "../types/meal";
 import type { MealsResponse } from "../types/api";
+import Spinner from "../components/Spinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 /**
  * Recipe search page with URL state.
@@ -33,35 +35,64 @@ export default function Search() {
     };
 
     return (
-        <div>
-            <h1>Search Recipes</h1>
+        <div className="container my-5">
+            <div className="row mb-4">
+                <div className="col">
+                    <h1 className="display-4 fw-bold text-center">
+                        Search Recipes
+                    </h1>
+                    <p className="lead text-center text-muted">
+                        Find your favorite recipes
+                    </p>
+                </div>
+            </div>
 
-            {/* Form for searching */}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search for a recipe..."
-                />
-                <button type="submit">Search</button>
-            </form>
+            <div className="row mb-4">
+                <div className="col-md-8 mx-auto">
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-group input-group-lg">
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Search for a recipe..."
+                                aria-label="Search for a recipe"
+                            />
+                            <button className="btn btn-primary" type="submit">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-            {/* Handle various data fetching states */}
-            {loading && searchTerm && <p>Loading results...</p>}
-            {error && <p>Error: {error.message}</p>}
-
-            {/* Logic for "No Results Found" */}
-            {!loading && !error && searchTerm && !data?.meals && (
-                <p>No recipes found for "{searchTerm}".</p>
+            {loading && (
+                <div className="text-center">
+                    <Spinner />
+                </div>
             )}
 
-            {/* Render results in a grid layout */}
-            <div className="search-grid">
-                {data?.meals?.map((meal) => (
-                    <MealCard key={meal.idMeal} meal={meal} />
-                ))}
-            </div>
+            {error && <ErrorMessage message={error.message} />}
+
+            {!loading && !error && (!data || !data.meals) && searchTerm && (
+                <div className="alert alert-warning" role="alert">
+                    No recipes found for "{searchTerm}".
+                </div>
+            )}
+
+            {data?.meals && data.meals.length > 0 && (
+                <div className="row g-4">
+                    {data.meals.map((meal) => (
+                        <div
+                            key={meal.idMeal}
+                            className="col-md-6 col-lg-4 col-xl-3"
+                        >
+                            <MealCard meal={meal} />
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
