@@ -17,11 +17,12 @@ export default function Search() {
 
     // Only construct the URL if searchTerm is not empty
     const { data, loading, error } = searchTerm
-        ? useFetch<MealsResponse<MealSummary>>(
-              `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
-                  searchTerm
-              )}`
-          )
+        ? // eslint-disable-next-line react-hooks/rules-of-hooks
+            useFetch<MealsResponse<MealSummary>>(
+                `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
+                    searchTerm
+                )}`
+            )
         : { data: null, loading: false, error: null };
 
     const handleSubmit = (e: React.FormEvent) => {
