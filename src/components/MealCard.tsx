@@ -1,16 +1,23 @@
 import { Link } from "react-router-dom";
-import type { MealSummary } from "../types/meal";
+import type { MealCardProps } from "../types/meal";
 
-type MealCardProps = {
-    meal: MealSummary;
-};
+export default function MealCard({ meal, link }: MealCardProps) {
+    const to = link || `/recipe/${meal.idMeal}`;
 
-export default function MealCard({ meal }: MealCardProps) {
     return (
-        <div className="meal-card">
-            <Link to={`/recipe/${meal.idMeal}`}>
-                <img src={meal.strMealThumb} alt={meal.strMeal} />
-                <h3>{meal.strMeal}</h3>
+        <div className="card h-100 shadow-sm meal-card">
+            <Link to={to} className="text-decoration-none text-dark">
+                <img
+                    src={meal.strMealThumb}
+                    alt={meal.strMeal}
+                    className="card-img-top"
+                    style={{ height: "200px", objectFit: "cover" }}
+                />
+                <div className="card-body d-flex align-items-center justify-content-center">
+                    <h5 className="card-title text-center mb-0">
+                        {meal.strMeal}
+                    </h5>
+                </div>
             </Link>
         </div>
     );

@@ -19,3 +19,8 @@ export interface MealDetail {
     [key: `strIngredient${number}`]: string | null; // Ingredient at position `number`.
     [key: `strMeasure${number}`]: string | null; // Measure for ingredient at position `number`.
 }
+
+export interface MealCardProps {
+    meal: MealSummary;
+    link?: string;
+}
