@@ -1,3 +1,52 @@
+import { useParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import type { MealDetail } from "../types/meal";
+import type { MealsResponse } from "../types/api";
+
 export default function RecipeDetail() {
-    return <h1>Hello, its recipe</h1>;
+    const { recipeId } = useParams<{ recipeId: string }>();
+
+    if (!recipeId) {
+        return <p>Invalid recipe.</p>;
+    }
+
+    const { data, loading, error } = useFetch<MealsResponse<MealDetail>>(
+        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
+    );
+
+    if (loading) return <p>Loading recipe...</p>;
+    if (error) return <p>Error loading recipe.</p>;
+    if (!data || !data.meals || data.meals.length === 0) {
+        return <p>Recipe not found.</p>;
+    }
+
+    const meal = data.meals[0];
+
+    // Build ingredients list
+    const ingredients: string[] = [];
+
+    for (let i = 1; i <= 20; i++) {
+        const ingredient = meal[`strIngredient${i}`];
+        const measure = meal[`strMeasure${i}`];
+
+        if (ingredient && ingredient.trim()) {
+            ingredients.push(`${measure ? measure : ""} ${ingredient}`.trim());
+        }
+    }
+
+    return (
+        <div>
+            <h1>{meal.strMeal}</h1>
+
+            <img src={meal.strMealThumb} alt={meal.strMeal} width={300} />
+
+            <p>
+                <strong>Category:</strong> {meal.strCategory}
+            </p>
+            <p>
+                <strong>Area:</strong> {meal.strArea}
+            </p>
+
+        </div>
+    );
 }
