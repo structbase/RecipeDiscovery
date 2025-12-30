@@ -303,6 +303,5 @@ Using the **Context API for favorites** allowed the favorites feature to scale c
 Developed by **Abenezer**
 
 > Junior Front-End Developer
-> Focused on React, TypeScript, and clean UI architecture
 
 ---
