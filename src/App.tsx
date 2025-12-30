@@ -11,7 +11,7 @@ import Navbar from "./components/Navbar";
 function App() {
     return (
         <>
-            <Navbar/>
+            <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/category/:categoryName" element={<Category />} />
