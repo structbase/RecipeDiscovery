@@ -9,13 +9,14 @@ export default function Home() {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
+    if (!data) return <p>No data available.</p>;
 
     return (
         <div>
             <h1>Categories</h1>
 
             <ul>
-                {data?.categories.map((category) => (
+                {data.categories.map((category) => (
                     <li key={category.idCategory}>
                         <Link to={`/category/${category.strCategory}`}>
                             {category.strCategory}
