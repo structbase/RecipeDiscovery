@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
-
+/**
+ *
+ * @returns handling error 404 message
+ */
 export default function NotFound() {
     return (
         <div style={{ textAlign: "center", padding: "2rem" }}>
