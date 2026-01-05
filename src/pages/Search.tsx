@@ -13,15 +13,14 @@ export default function Search() {
     const [searchParams, setSearchParams] = useSearchParams();
     const searchTerm = searchParams.get("query") || "";
 
-    // Fetch only when search term exists
-    const { data, loading, error } = searchTerm
-        ? // eslint-disable-next-line react-hooks/rules-of-hooks
-            useFetch<MealsResponse<MealSummary>>(
-                `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
-                    searchTerm
-                )}`
-            )
-        : { data: null, loading: false, error: null };
+    // Build URL (or null) and call hook unconditionally
+    const url = searchTerm
+        ? `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
+              searchTerm,
+          )}`
+        : null;
+
+    const { data, loading, error } = useFetch<MealsResponse<MealSummary>>(url);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
