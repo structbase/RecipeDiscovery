@@ -21,15 +21,20 @@ export default function Favorites() {
             return;
         }
 
+        const controller = new AbortController();
+        let mounted = true;
+
         const fetchAllFavorites = async () => {
+            if (!mounted) return;
             setLoading(true);
             setError(null);
 
             try {
-                // Fetch all favorites in parallel
+                // Fetch all favorites in parallel with abort signal
                 const promises = favorites.map((id) =>
                     fetch(
-                        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+                        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`,
+                        { signal: controller.signal }
                     ).then((res) => res.json())
                 );
 
@@ -43,19 +48,29 @@ export default function Favorites() {
                     }
                 });
 
-                setMeals(allMeals);
-            } catch (err) {
-                setError(
-                    err instanceof Error
-                        ? err
-                        : new Error("Failed to load favorites")
-                );
+                if (mounted) setMeals(allMeals);
+            } catch (err: unknown) {
+                if (err instanceof Error && err.name === "AbortError") {
+                    // Ignore aborts
+                } else {
+                    if (mounted)
+                        setError(
+                            err instanceof Error
+                                ? err
+                                : new Error("Failed to load favorites")
+                        );
+                }
             } finally {
-                setLoading(false);
+                if (mounted) setLoading(false);
             }
         };
 
         fetchAllFavorites();
+
+        return () => {
+            mounted = false;
+            controller.abort();
+        };
     }, [favorites]);
 
     // Show empty state if no favorites
